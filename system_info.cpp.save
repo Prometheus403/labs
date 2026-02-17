@@ -1,0 +1,51 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cstdio>
+#include <memory>
+#include <array>
+
+std::string exec(const char* cmd) {
+    std::array<char, 256> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd, "r"), pclose);
+
+    if (!pipe) return "Error executing command\n";
+
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
+}
+
+int main() {
+
+    std::cout << "     System Information\n";
+
+    std::string cpu   = exec("lscpu | grep 'Model name'");
+    std::string mem   = exec("free -h | grep Mem");
+    std::string disk  = exec("lsblk -o NAME,SIZE,TYPE");
+    std::string mac   = exec("ip link | grep link/ether");
+    std::string os    = exec("cat /etc/os-release | grep PRETTY_NAME");
+
+    std::cout << "CPU:\n" << cpu << "\n";
+    std::cout << "Memory:\n" << mem << "\n";
+    std::cout << "Disk:\n" << disk << "\n";
+    std::cout << "MAC:\n" << mac << "\n";
+    std::cout << "OS:\n" << os << "\n";
+
+    std::cout << "Generating Fingerprint...\n";
+
+    std::string combined = cpu + mem + mac + os;
+    std::ofstream temp("temp.txt");
+    temp << combined;
+    temp.close();
+
+    std::string fingerprint = exec("sha256sum temp.txt");
+    std::remove("temp.txt");
+
+    std::cout << "System Fingerprint:\n" << fingerprint << "\n";
+
+    return 0;
+}
