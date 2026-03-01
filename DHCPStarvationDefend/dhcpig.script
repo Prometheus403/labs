@@ -1,0 +1,8 @@
+/ip dhcp-server lease
+:foreach i in=[find] do={
+:local ip [get $i address]
+:if (([ :ping $ip count=1 interval=15ms])=0) do={
+        :log warning "CLEANER: Deleting unreachable lease IP=$ip"
+        remove $i
+    }
+}

@@ -1,0 +1,15 @@
+:foreach i in=[/ip dhcp-server lease find] do={
+
+    :local mac [/ip dhcp-server lease get $i active-mac-address]
+    
+:local cid [/ip dhcp-server lease get $i client-id]
+
+   
+ :if ([:len $cid] = 0) do={
+        
+:log warning "CLEANER: Deleting rogue lease MAC=$mac (No Client ID in testing)"
+        
+/ip dhcp-server lease remove $i
+
+}
+}
