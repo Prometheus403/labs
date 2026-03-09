@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG -Wl,--dependency-file=CMakeFiles/LicensingSystem.dir/link.d CMakeFiles/LicensingSystem.dir/src/HardwareID.cpp.o CMakeFiles/LicensingSystem.dir/src/LicenseKey.cpp.o CMakeFiles/LicensingSystem.dir/src/LicenseManager.cpp.o CMakeFiles/LicensingSystem.dir/src/main.cpp.o -o LicensingSystem  /usr/lib/x86_64-linux-gnu/libcrypto.so
